@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+    <title> UIS-VS-Mouse </title>
+
+    <body>
+        <p>
+            A common occurrence I see when lurking or assisting in help channels for Roblox Lua is people using</br>
+            the <a href="https://developer.roblox.com/en-us/api-reference/event/Mouse/KeyDown"> old</a>,
+            <a href="https://developer.roblox.com/en-us/api-reference/event/Mouse/KeyUp"> deprecated</a>, mouse functions for detecting keyboard input.
+        </p>
+        <p>
+            The main reason that this happens (as far as I know) is because of free models, and outdated tutorials. </br>
+            While there is nothing wrong with looking at free models, you should always keep in mind that there is a </br>
+            high chance that the models you are looking at <i>might not</i> have the most up-to-date code. Since these </br>
+            functions are deprecated, it is best to know how to write up-to-date keyboard handling code.
+        </p>
+        <p>
+            Keyboard handling is primarily done through two services now. ContextActionService (CSA), and UserInputService (UIS).</br>
+            This will only discuss UserInputService. It should be noted that these two services <i>are</i> different, but UserInputService </br>
+            is, more often than not, the "correct" solution to most of the problems I see posted. </br>
+        </p>
+        <p>
+            So, let us try to convert this disaster: </br>
+        </p>
+        <pre bgcolor="#CCCCCC">
+local Player = game:GetService("Players").LocalPlayer
+local Mouse = Player:GetMouse()
+
+Mouse.KeyDown:Connect(function(pressedKey)
+    if pressedKey == "a" then
+        print("A was pressed!")
+    end
+end)
+        </pre>
+        <p>
+            Into something more in-line with modern code.
+        </p>
+        <p>
+            UserInputService exposes two events that will be of use to us here. <a href="https://developer.roblox.com/en-us/api-reference/event/UserInputService/InputBegan"> InputBegan</a>, and <a href="https://developer.roblox.com/en-us/api-reference/event/UserInputService/InputEnded"> InputEnded</a>. Both of these </br>
+            events return an <b>InputObject</b> which contains a property that specifies the KeyCode of the pressed key. This will </br>
+            allow you to determine the key that was pressed when using InputBegan, and the key that was released in InputEnded. </br>
+            This is an example of how to use UserInputService to detect when the "A" key is pressed: </br>
+        </p>
+        <pre bgcolor="#CCCCCC">
+local UserInputService = game:GetService("UserInputService")
+local Player = game:GetService("Players").LocalPlayer
+
+UserInputService.InputBegan:Connect(function(pressedKey)
+    if pressedKey.KeyCode == Enum.KeyCode.A then
+        print("A was pressed!")
+    end
+end)
+        </pre>
+        <p>
+            Most of what this comes down to is simply comparing the KeyCode property of the <b>InputObject</b>, which in this case is </br>
+            represented by the <b>pressedKey</b> parameter, to an Enum representing the letter A. You can follow the same logic shown in </br>
+            this example, to basically any other key that you can find on your keyboard. You can find a list of each key's Enum on </br>
+            <a href="https://developer.roblox.com/en-us/api-reference/enum/KeyCode"> this</a> page.
+        </p>
+    </body>
+</html>
